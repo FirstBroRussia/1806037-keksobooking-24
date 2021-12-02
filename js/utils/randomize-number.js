@@ -5,7 +5,8 @@ const getRandomFractionalNumber = (min, max, fixed) => {
   if (randomNumber >= max) {
     return max;
   }
-  return randomNumber.toFixed(fixed);
+  if (fixed) return randomNumber.toFixed(fixed);
+  return randomNumber;
 }
 
 
