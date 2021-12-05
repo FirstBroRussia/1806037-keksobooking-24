@@ -47,6 +47,7 @@ body {
   font-size: 16px;
 
   background-color: #f0f0ea;
+  position: relative;
 }
 
 fieldset {
@@ -95,6 +96,7 @@ fieldset {
  */
 
 .map__filters-container {
+  display: flex;
   width: 100%;
   background-color: #000000;
 }
@@ -1027,4 +1029,86 @@ fieldset {
 
 .hidden {
   display: none;
+}
+
+
+/* Классы для попапа под фотографию жилья из балуна*/
+
+.popup-modal-wrapper {
+  position:absolute;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.7);
+  z-index:1000;
+}
+
+.popup__photo-home {
+  width: 800px;
+  height: 800px;
+
+  border-radius: 5%;
+
+  background-color: #dddddd;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -800px 0 0 -400px;
+  z-index: 999999;
+}
+
+.popup__image {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 5%;
+}
+
+.popup-modal-wrapper__close-btn-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: absolute;
+
+  right: 10px;
+  top: 10px;
+
+  opacity: 1;
+
+  z-index: 2;
+
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-color: #ffffff;
+  padding: 0;
+}
+
+.img__close-btn {
+  position: absolute;
+  height: 100%;
+  width: auto;
+  z-index: 3;
+}
+
+.popup-modal-wrapper__close-btn {
+  border-radius: 50%;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 4;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.map-reset {
+  width: 150px;
+  height: 50px;
 }

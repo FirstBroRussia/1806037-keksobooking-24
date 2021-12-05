@@ -79,4 +79,3 @@ dataList.forEach( (item) => {
 
 });
 
-mapCanvasElement.appendChild(fragmentDocument.children[0]);

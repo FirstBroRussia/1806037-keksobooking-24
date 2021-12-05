@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <title>Кексобукинг</title>
 </head>
@@ -65,6 +68,7 @@
             <label class="map__feature map__feature--conditioner" for="filter-conditioner">Кондиционер</label>
            </fieldset>
         </form>
+        <button type="button" class="map-reset" id="map-reset">Очистить карту/Вернуть метку</button>
       </div>
     </section>
 
@@ -91,7 +95,7 @@
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес (координаты)</label>
-          <input id="address" name="address" type="text" value="" disabled>
+          <input id="address" name="address" type="text" value="" readonly>
         </fieldset>
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="type">Тип жилья</label>
@@ -161,7 +165,7 @@
           <label class="ad-form__label">Фотография жилья</label>
           <div class="ad-form__photo-container">
             <div class="ad-form__upload">
-              <input type="file" id="images" name="images" class="ad-form__input visually-hidden" accept="image/*" multiple required>
+              <input type="file" id="images" name="images" class="ad-form__input visually-hidden" accept="image/*" multiple >
               <label for="images" class="ad-form__drop-zone">Загрузить<br>фото...</label>
             </div>
             <div class="ad-form__photo"></div>
@@ -190,6 +194,15 @@
     </ul>
   </footer>
 
+  <!-- Шаблон balloon -->
+  <template id="balloon">
+    <section class="balloon">
+      <h3 class="balloon__title">Остров сокровищ</h3>
+      <p class="balloon__lat-lng">Координаты: 12.34567, 98.76543</p>
+      <div class="balloon__photos"></div>
+    </section>
+  </template>
+
   <!-- Карточка объявления -->
   <template id="card">
     <article class="popup">
@@ -215,6 +228,16 @@
     </article>
   </template>
 
+  <!-- Попап для отображений фотографий жилья -->
+  <div class="popup-modal-wrapper hidden">
+    <div class="popup__photo-home">
+      <img src="" class="popup__image">
+      <div class="popup-modal-wrapper__close-btn-wrap">
+        <button class="popup-modal-wrapper__close-btn"></button>
+        <img src="img/close-button.png" class="img__close-btn">
+      </div>
+    </div>
+  </div>
   <!-- Сообщение об успешном создании объявления -->
   <template id="success">
     <div class="success">
@@ -229,6 +252,9 @@
       <button type="button" class="error__button">Попробовать снова</button>
     </div>
   </template>
-<script src="/js/main.js" type="module"></script>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+  <script src="/js/main.js" type="module"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-import {getRandomIntegerNumber} from "./utils/randomize-number.js";
+import {getRandomIntegerNumber} from "./utils/util.js";
 
 
 const TITLE = [

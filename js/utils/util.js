@@ -9,5 +9,10 @@ const getRandomFractionalNumber = (min, max, fixed) => {
   return randomNumber;
 }
 
+const onEscapeKeyDown = (evt) => {
+  if (evt.key === 'Esc' || evt.key === 'Escape' || evt.key === 27) {
+    return true;
+  }
+};
 
-export {getRandomIntegerNumber, getRandomFractionalNumber};
+export {getRandomIntegerNumber, getRandomFractionalNumber, onEscapeKeyDown};
