@@ -1,6 +1,7 @@
 import {getActiveStateForSpecificFieldsBySuccessLoadDataFromServer} from '/js/inactive-state.js';
 import {onEscapeKeyDown} from './utils/util.js';
 import {getRenderBalloonTemplate} from '/js/render-balloon-element.js';
+import {resetMapFiltersForm, getRenderMarkersByFilteredDataList} from '/js/filters-form-to-map.js';
 
 const mapElement = document.querySelector('#map-canvas');
 const inputAddressToAdForm = document.querySelector('#address');
@@ -67,6 +68,8 @@ mapResetButton.addEventListener('click', () => {
   }, 12);
 inputAddressToAdForm.setAttribute('value', `${mainMarker._latlng.lat.toFixed(5)} ${mainMarker._latlng.lng.toFixed(5)}`);
 map.closePopup();
+resetMapFiltersForm();
+getRenderMarkersByFilteredDataList();
 });
 
 mainMarker.on('moveend', (evt) => {
@@ -135,9 +138,14 @@ function closeBigImage () {
 
 function renderMarkerBasedDataFromServer (data) {
   data.forEach( (item) => {
-    createMarker(item);
+    createMarker(item, defaultLayer);
   });
   map.addLayer(defaultLayer);
 }
 
-export {mapResetButton, renderMarkerBasedDataFromServer};
+function getCustomLayerOnTheMap (data) {
+  defaultLayer.clearLayers();
+  data.forEach( (item) => createMarker(item));
+}
+
+export {mapResetButton, renderMarkerBasedDataFromServer, getCustomLayerOnTheMap};

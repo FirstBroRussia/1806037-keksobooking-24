@@ -17,6 +17,7 @@ const dataFromServer = fetch('https://24.javascript.pages.academy/keksobooking/d
   .then((data) => {
     renderMarkerBasedDataFromServer(data);
     getDataFromServer(data);
+    console.log(data);
 
   })
   .catch((error) => {
@@ -35,23 +36,24 @@ function dataToServer () {
   })
   .then((response) => {
     if (!response.ok) {
-      resetAdForm();
-      resetMapFiltersForm();
-      mapResetButton.click();
-      getSuccessDataToServer();
-
-      const successElement = document.querySelector('.success');
-      document.addEventListener('click', () => {
-        successElement.remove();
-      });
-      document.addEventListener('keydown', (evt) => {
-        if (onEscapeKeyDown(evt)) {
-          successElement.remove();
-        }
-      });
+      throw response.json();
     }
 
-    throw response;
+    resetAdForm();
+    resetMapFiltersForm();
+    mapResetButton.click();
+    getSuccessDataToServer();
+
+    const successElement = document.querySelector('.success');
+    document.addEventListener('click', () => {
+      successElement.remove();
+    });
+    document.addEventListener('keydown', (evt) => {
+      if (onEscapeKeyDown(evt)) {
+        successElement.remove();
+      }
+    });
+    return response.json();
   })
   .then((json) => console.log(json))
   .catch((reject) => {

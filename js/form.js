@@ -1,5 +1,7 @@
 import {dataToServer} from '/js/fetch-requests-to-server.js';
 import {onEscapeKeyDown} from '/js/utils/util.js';
+import {resetMapFiltersForm} from '/js/filters-form-to-map.js';
+import {mapResetButton} from '/js/map.js';
 
 const bodyElement = document.querySelector('body');
 const adForm = document.querySelector('.ad-form');
@@ -23,7 +25,6 @@ const inputImagesUploadPhotosHome = adForm.querySelector('.ad-form__input');
 const photoHomeContainer = adForm.querySelector('.ad-form__photo-container');
 const photoHome = photoHomeContainer.querySelector('.ad-form__photo');
 
-const submitButtontoAdForm = adForm.querySelector('.ad-form__submit');
 const resetButtonToAdForm = adForm.querySelector('.ad-form__reset');
 
 const successLoadAdTemplate = document.querySelector('#success').content.querySelector('.success');
@@ -128,6 +129,12 @@ function resetAdForm () {
 adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   dataToServer();
+});
+
+resetButtonToAdForm.addEventListener('click', () => {
+  resetAdForm();
+  resetMapFiltersForm();
+  mapResetButton.click();
 });
 
 export {adForm, resetAdForm, getSuccessDataToServer, getErrorDataToServer};
