@@ -1,33 +1,19 @@
-import {getInactiveStateForSpecificFields, getActiveStateForSpecificFields} from '/js/inactive-state.js';
-import {dataList} from './data-list.js';
+import {getActiveStateForSpecificFieldsBySuccessLoadDataFromServer} from '/js/inactive-state.js';
 import {onEscapeKeyDown} from './utils/util.js';
+import {getRenderBalloonTemplate} from '/js/render-balloon-element.js';
 
-const mapWrap = document.querySelector('#map-canvas');
+const mapElement = document.querySelector('#map-canvas');
 const inputAddressToAdForm = document.querySelector('#address');
 const mapResetButton = document.querySelector('#map-reset');
-const balloonTemplate = document.querySelector('#balloon').content.querySelector('.balloon');
 
 const popupBalloonShowPhotoHome = document.querySelector('.popup-modal-wrapper');
-const popupBallonImage = popupBalloonShowPhotoHome.querySelector('.popup__image');
+const popupBallonImage = popupBalloonShowPhotoHome.querySelector('.popup__image-big');
 const closeButtonBigImage = popupBalloonShowPhotoHome.querySelector('.popup-modal-wrapper__close-btn');
 
-function getBalloon (item) {
-  const balloonClone = balloonTemplate.cloneNode(true);
-
-  const title = balloonClone.querySelector('.balloon__title');
-  const address = balloonClone.querySelector('.balloon__lat-lng');
-  const photos = balloonClone.querySelector('.balloon__photos');
-
-  title.innerHTML = item.offer.title;
-  address.innerHTML = item.offer.address;
-  item.offer.photos.forEach( (item) => photos.insertAdjacentHTML('beforeend', `<a href="${item}"><img src="${item}" class="balloon__photo" width="45" height="40" alt="Фотография жилья"></a>`));
-
-  return balloonClone;
-}
-
-const map = L.map(mapWrap)
+// ПОЯВЛЕНИЕ КАРТЫ,ВЫЮОР НАЧАЛЬНОЙ МЕТКИ  И ОТРИСОВКА ПРОВАЙДЕРА КАРТ
+const map = L.map(mapElement)
   .on('load', () => {
-    getActiveStateForSpecificFields();
+      getActiveStateForSpecificFieldsBySuccessLoadDataFromServer();
   })
   .setView({
     lat: 35.6895,
@@ -41,6 +27,7 @@ L.tileLayer(
   },
 ).addTo(map);
 
+// ДОБАВЛЕНИЯ ГЛАВНОЙ МЕТКИ НА КАРТУ И ПРИДАНИЕ ЕЙ SVG, ТАКЖЕ ОТНОСИТЕЛЬНО ЕЕ ПОЛОЖЕНИЯ КООРДИНАТЫ В ФОРМУ ПИШУТСЯ
 
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
@@ -48,13 +35,14 @@ const mainPinIcon = L.icon({
   iconArchor: [26, 52],
 });
 
+
 const defaultPinIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [40, 40],
   iconArchor: [20, 40],
 });
 
-/* const mainMarker = L.marker({
+const mainMarker = L.marker({
   lat: 35.6895,
   lng: 139.692,
 },
@@ -63,27 +51,34 @@ const defaultPinIcon = L.icon({
   icon: mainPinIcon,
 }
 );
-mainMarker.addTo(map); */
+mainMarker.addTo(map);
+inputAddressToAdForm.setAttribute('value', `${mainMarker._latlng.lat.toFixed(5)}, ${mainMarker._latlng.lng.toFixed(5)}`);
+
+// КНОПКА СБРОСА ДО НАЧАЛЬНОГО ПОЛОЖЕНИЯ КАРТЫ И ГЛАВНОЙ МЕТКИ, ТАКЖЕ ПИШЕТСЯ ЕЕ КООРДИНАТЫ В ФОРМУ ПРИ ПЕРЕМЕЩЕНИИ
 
 mapResetButton.addEventListener('click', () => {
-  /* mainMarker.setLatLng({
+  mainMarker.setLatLng({
     lat: 35.6895,
     lng: 139.692,
-  }); */
+  });
   map.setView({
     lat: 35.6895,
     lng: 139.692,
   }, 12);
+inputAddressToAdForm.setAttribute('value', `${mainMarker._latlng.lat.toFixed(5)} ${mainMarker._latlng.lng.toFixed(5)}`);
+map.closePopup();
 });
 
-/* mainMarker.on('moveend', (evt) => {
-  inputAddressToAdForm.setAttribute('value', `${evt.target.getLatLng().lat} ${evt.target.getLatLng().lng}`);
-}); */
+mainMarker.on('moveend', (evt) => {
+  inputAddressToAdForm.setAttribute('value', `${evt.target.getLatLng().lat.toFixed(5)} ${evt.target.getLatLng().lng.toFixed(5)}`);
+});
 
-const newLayer = L.layerGroup().addTo(map);
+// ТУТ НАЧАЛО ОТРИСОВОК МАРКЕРОВ, СОЗДАНИЯ СЛОЁВ ДЛЯ МЕТОК...
+
+const defaultLayer = L.layerGroup();
+const customLayer = L.layerGroup();
 
 function createMarker (point) {
-
   const marker = L.marker({
     lat: point.location.lat,
     lng: point.location.lng,
@@ -93,40 +88,38 @@ function createMarker (point) {
   }
   );
 
+  const balloonElement = getRenderBalloonTemplate(point);
+
   marker
-    .addTo(newLayer)
-    .bindPopup(getBalloon(point));
-}
-
-function clearLayers (layer) {
-  return layer.clearLayers();
+    .addTo(defaultLayer)
+    .bindPopup(balloonElement);
 }
 
 
-dataList.forEach( (item) => {
-  createMarker(item);
-});
+map.on('popupopen', (evt) => {
+  console.log(evt.popup._latlng);
+  console.log(evt);
 
-map.on('popupopen', () => {
-  console.log('open');
 });
 
 map.on('popupclose', () => {
   console.log('close')
 });
 
-document.addEventListener('click', (evt) => {
+mapElement.addEventListener('click', (evt) => {
   evt.preventDefault();
-  if(evt.target.closest('a')) {
-  const aaa = evt.target.closest('a');
-  console.log(aaa.getAttribute('href'));
-  popupBallonImage.setAttribute('src', aaa.getAttribute('href'));
-  document.querySelector('body').classList.add('overflow-hidden');
-  popupBalloonShowPhotoHome.classList.remove('hidden');
-  closeButtonBigImage.addEventListener('click', closeBigImage);
-  document.addEventListener('keydown', closeBigImageKeyDown);
+
+  if (evt.target.closest('img[class="popup__photo"]')) {
+    window.scrollTo(0, 0);
+    const currentClickTarget = evt.target.closest('img[class="popup__photo"]');
+    popupBallonImage.setAttribute('src', currentClickTarget.getAttribute('src'));
+    document.querySelector('body').classList.add('overflow-hidden');
+    popupBalloonShowPhotoHome.classList.remove('hidden');
+    closeButtonBigImage.addEventListener('click', closeBigImage);
+    document.addEventListener('keydown', closeBigImageKeyDown);
   }
 });
+
 
 function closeBigImageKeyDown (evt) {
   if (onEscapeKeyDown(evt)) return closeBigImage();
@@ -139,3 +132,12 @@ function closeBigImage () {
   closeButtonBigImage.removeEventListener('click', closeBigImage);
   document.removeEventListener('keydown', closeBigImageKeyDown);
 }
+
+function renderMarkerBasedDataFromServer (data) {
+  data.forEach( (item) => {
+    createMarker(item);
+  });
+  map.addLayer(defaultLayer);
+}
+
+export {mapResetButton, renderMarkerBasedDataFromServer};

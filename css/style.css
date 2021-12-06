@@ -291,6 +291,8 @@ fieldset {
 }
 
 .ad-form-header__preview {
+  /* position: absolute; */
+
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -298,10 +300,11 @@ fieldset {
       -ms-flex-align: center;
           align-items: center;
 
-  margin-right: 10px;
-  padding: 0 15px;
 
-  width: 70px;
+  /* margin-right: 10px;
+   padding: 0 15px; */
+
+  width: 210px;
   height: 70px;
 
   text-align: center;
@@ -1060,7 +1063,7 @@ fieldset {
   z-index: 999999;
 }
 
-.popup__image {
+.popup__image-big {
   width: 100%;
   height: 100%;
 
@@ -1111,4 +1114,23 @@ fieldset {
 .map-reset {
   width: 150px;
   height: 50px;
+  font-size: 1vw;
+}
+
+.error__data-from-server {
+  width: 100%;
+  height: 50px;
+  position: absolute;
+  z-index: 1000000000000;
+  top: 1px;
+  padding-top: 15px;
+  text-align: center;
+  vertical-align: auto;
+  background-color: #ff5635;
+  color: #000000;
+}
+
+.ad-form-header__preview-avatar {
+  width: 100%;
+  height: 100%;
 }

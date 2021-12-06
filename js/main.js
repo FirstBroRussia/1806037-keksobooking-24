@@ -1,6 +1,8 @@
 import './utils/util.js';
-import '/js/data-list.js';
-import '/js/generate-markup-similar-announcement.js';
 import '/js/inactive-state.js';
-import '/js/form.js';
+import '/js/fetch-requests-to-server.js';
 import '/js/map.js';
+import '/js/filters-form-to-map.js';
+
+import '/js/render-balloon-element.js';
+import '/js/form.js';

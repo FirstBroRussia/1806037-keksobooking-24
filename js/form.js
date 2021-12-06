@@ -1,15 +1,33 @@
+import {dataToServer} from '/js/fetch-requests-to-server.js';
+import {onEscapeKeyDown} from '/js/utils/util.js';
+
+const bodyElement = document.querySelector('body');
 const adForm = document.querySelector('.ad-form');
 
+const imageAvatar = adForm.querySelector('.ad-form-header__preview').querySelector('img');
+const inputImageAvatar = adForm.querySelector('#avatar');
+const titleAdForm = adForm.querySelector('#title');
 const inputImageUploadAvatar = adForm.querySelector('.ad-form-header__input');
+const inputAddressToAdForm = adForm.querySelector('#address');
 const selectTypeHome = adForm.querySelector('#type');
 const priceHome = adForm.querySelector('#price');
 const selectTimeIn = adForm.querySelector('#timein');
 const selectTimeOut = adForm.querySelector('#timeout');
 const selectRoomCount = adForm.querySelector('#room_number');
 const selectCapacity = adForm.querySelector('#capacity');
+const optionsCapacity = selectCapacity.querySelectorAll('option');
+const descriptionToAdForm = adForm.querySelector('#description');
+const inputImagesPhotoHome = adForm.querySelector('#images');
+const allFeaturesCheckbox = adForm.querySelectorAll('.features__checkbox');
 const inputImagesUploadPhotosHome = adForm.querySelector('.ad-form__input');
 const photoHomeContainer = adForm.querySelector('.ad-form__photo-container');
 const photoHome = photoHomeContainer.querySelector('.ad-form__photo');
+
+const submitButtontoAdForm = adForm.querySelector('.ad-form__submit');
+const resetButtonToAdForm = adForm.querySelector('.ad-form__reset');
+
+const successLoadAdTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorLoadAdTemplate = document.querySelector('#error').content.querySelector('.error');
 
 function switchTypeHome (type) {
   switch (type) {
@@ -22,7 +40,6 @@ function switchTypeHome (type) {
 }
 
 function imageUploadChangeHandler () {
-  const imageAvatar = adForm.querySelector('.ad-form-header__preview').querySelector('img');
   const inputFile = inputImageUploadAvatar.files[0];
   const fileUrl = URL.createObjectURL(inputFile);
   imageAvatar.setAttribute('src', `${fileUrl}`);
@@ -66,9 +83,51 @@ function inputImagePhotoHomeChangeHandler (evt) {
 }
 
 inputImagesUploadPhotosHome.addEventListener('change', inputImagePhotoHomeChangeHandler);
-selectRoomCount.addEventListener('change', selectRoomCountChangeHandler);
+selectRoomCount.addEventListener('input', selectRoomCountChangeHandler);
 inputImageUploadAvatar.addEventListener('change', imageUploadChangeHandler);
 selectTypeHome.addEventListener('change', selectTypeHomeChangeHandler);
 selectTimeIn.addEventListener('change', selectTimeInChangeHandler);
 selectTimeOut.addEventListener('change', selectTimeOutChangeHandler);
 
+function getSuccessDataToServer () {
+  const successMarkupClone = successLoadAdTemplate.cloneNode(true);
+  bodyElement.append(successMarkupClone);
+}
+
+function getErrorDataToServer () {
+  const errorMarkupClone = errorLoadAdTemplate.cloneNode(true);
+  bodyElement.append(errorMarkupClone);
+}
+
+
+
+function resetAdForm () {
+  imageAvatar.setAttribute('src', `img/muffin-grey.svg`);
+  inputImageAvatar.value = '';
+  titleAdForm.value = '';
+  selectTypeHome.value = 'flat';
+  priceHome.min = 1000;
+  priceHome.placeholder = 'Минимум 1000';
+  priceHome.value = '';
+  selectTimeIn.value = '12:00';
+  selectTimeOut.value = '12:00';
+  selectRoomCount.value = 1;
+  optionsCapacity.forEach( (item) => {
+    if (+item.getAttribute('value') === 1) {
+      item.disabled = false;
+      selectCapacity.value = 1;
+    } else {
+      item.disabled = true;
+    }
+  });
+  allFeaturesCheckbox.forEach((item) => {item.checked = false;});
+  descriptionToAdForm.value = '';
+  inputImagesPhotoHome.value = '';
+}
+
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  dataToServer();
+});
+
+export {adForm, resetAdForm, getSuccessDataToServer, getErrorDataToServer};

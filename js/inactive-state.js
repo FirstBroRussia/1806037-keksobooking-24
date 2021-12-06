@@ -1,5 +1,6 @@
 const adForm = document.querySelector('.ad-form');
 const mapFiltersForm = document.querySelector('.map__filters');
+// const mapFiltersContainer = mapFiltersForm.querySelector('.');
 
 const fieldsetTagsFromAdFormElement = adForm.querySelectorAll('fieldset');
 const selectTagsFromMapFiltersForm = mapFiltersForm.querySelectorAll('select');
@@ -17,7 +18,15 @@ selectTagsFromMapFiltersForm.forEach( (item) => {
 });
 };
 
-const getActiveStateForSpecificFields = () => {
+const getActiveStateForSpecificFieldsByErrorLoadDataFromServer = () => {
+  adForm.classList.remove('ad-form--disabled');
+  fieldsetTagsFromAdFormElement.forEach( (item) => {
+    item.disabled = false;
+  });
+
+};
+
+const getActiveStateForSpecificFieldsBySuccessLoadDataFromServer = () => {
 adForm.classList.remove('ad-form--disabled');
 fieldsetTagsFromAdFormElement.forEach( (item) => {
   item.disabled = false;
@@ -29,4 +38,6 @@ selectTagsFromMapFiltersForm.forEach( (item) => {
 });
 };
 
-export {getInactiveStateForSpecificFields, getActiveStateForSpecificFields};
+getInactiveStateForSpecificFields();
+
+export {getInactiveStateForSpecificFields, getActiveStateForSpecificFieldsBySuccessLoadDataFromServer, getActiveStateForSpecificFieldsByErrorLoadDataFromServer};

@@ -1,11 +1,8 @@
-import {dataList} from './data-list.js';
-
 const cardTemplate = document.querySelector('#card').content.querySelector('.popup');
-const mapCanvasElement = document.querySelector('#map-canvas');
 
 const fragmentDocument = document.createDocumentFragment();
 
-dataList.forEach( (item) => {
+function getRenderBalloonTemplate (item) {
   const cloneCardPopupTemplate = cardTemplate.cloneNode(true);
   const cloneOfferPhotoMarkup = cardTemplate.querySelector('.popup__photo').cloneNode(true);
   const cloneOfferFeatureMarkupTemplate = cardTemplate.querySelector('.popup__feature').cloneNode(true);
@@ -37,7 +34,8 @@ dataList.forEach( (item) => {
 
   const getOfferRoomsTextContentToAppropriateMarkup = (rooms) => {
     if (rooms === 1) return `${rooms} комната`;
-    return `${rooms} комнаты`;
+    if (rooms >= 2 && rooms <= 4) return `${rooms} комнаты`;
+    if (rooms > 4) return `${rooms} комнат`;
   };
 
   const getOfferGuestsTextContentToAppropriateMarkup = (guests) => {
@@ -69,13 +67,28 @@ dataList.forEach( (item) => {
   popupOfferAddress.textContent = item.offer.address;
   popupOfferPrice.textContent = `${item.offer.price} ₽/ночь`;
   popupOfferType.textContent = getSwitchOfferType(item.offer.type);
-  popupOfferCapacity.textContent = `${getOfferRoomsTextContentToAppropriateMarkup(item.offer.rooms)} для ${getOfferGuestsTextContentToAppropriateMarkup(item.offer.guests)}`;
   popupOfferCheckInOutTime.textContent = `Заезд после ${item.offer.checkin}, выезд до ${item.offer.checkout}`;
-  getFeaturesListToMarkupPopup(item.offer.features);
   popupOfferDescription.textContent = item.offer.description;
+
+  if (!item.offer.rooms || !item.offer.guests) {
+    popupOfferCapacity.classList.add('hidden');
+  } else {
+  popupOfferCapacity.textContent = `${getOfferRoomsTextContentToAppropriateMarkup(item.offer.rooms)} для ${getOfferGuestsTextContentToAppropriateMarkup(item.offer.guests)}`;
+  }
+
+  if (!item.offer.features) {
+    popupOfferFeaturesList.classList.add('hidden');
+  } else {
+  getFeaturesListToMarkupPopup(item.offer.features);
+  }
+
+  if (!item.offer.photos) {
+    popupOfferPhotos.classList.add('hidden');
+  } else {
   getPhotosListToMarkupPopup(item.offer.photos);
+  }
 
-  fragmentDocument.appendChild(cloneCardPopupTemplate);
+  return cloneCardPopupTemplate;
+}
 
-});
-
+export {getRenderBalloonTemplate, cardTemplate};
